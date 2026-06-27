@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}{%endblock%}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+          <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    {% if user.is_authenticated %}
+    <nav class="bg-white shadow-md px-5 py-3 flex items-center justify-between fixed top-0 left-0 right-0 z-50 h-14">
+
+        <div class="flex items-center gap-3">
+            <button id="hamburger" onclick="toggleSidebar()" class="text-gray-700 hover:text-black text-2xl focus:outline-none">&#9776;</button>
+            <span class="font-bold text-lg tracking-tight">QR Generator</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="history.back()" class="text-sm text-gray-500 hover:text-black transition">&#8592; Back</button>
+            <a href="{% url 'dashboard' %}" class="text-sm bg-gray-100 text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-200 transition">{{ request.user.username }}</a>
+            <a href="{% url 'logout' %}" class="bg-red-500 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-red-600 transition">Logout</a>
+        </div>
+
+    </nav>
+
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/30 z-40" style="display:none"></div>
+
+    <aside id="sidebar" class="fixed top-14 left-0 h-full w-56 bg-white shadow-xl z-40 flex flex-col p-4 gap-1" style="transform:translateX(-100%);transition:transform 0.3s ease">
+
+        <a href="{% url 'dashboard' %}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">Dashboard</a>
+
+        <div>
+            <button onclick="toggleQRDropdown()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium transition">
+                <span>My QRs</span>
+                <span id="qrArrow" class="text-xs">&#9660;</span>
+            </button>
+            <div id="qrDropdown" style="display:none;flex-direction:column;gap:4px;padding-left:1rem;margin-top:4px">
+                <a href="{% url 'my_qrs' %}" class="px-3 py-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-blue-600 text-sm transition">All QR</a>
+                <a href="{% url 'active_qrs' %}" class="px-3 py-2 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-600 text-sm transition">Active QR</a>
+                <a href="{% url 'paused_qrs' %}" class="px-3 py-2 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-500 text-sm transition">Paused QR</a>
+            </div>
+        </div>
+
+        <a href="{% url 'logout' %}" class="flex items-center gap-2 px-3 py-2 rounded-xl text-red-500 hover:bg-red-50 font-medium transition">Logout</a>
+
+    </aside>
+    {% endif %}
+
+    <div class="{% if user.is_authenticated %}pt-14{% endif %}">
+        {%block content%}
+        {%endblock%}
+    </div>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+            var isOpen = sidebar.getAttribute('data-open') === 'true';
+            if (isOpen) {
+                sidebar.style.transform = 'translateX(-100%)';
+                overlay.style.display = 'none';
+                sidebar.setAttribute('data-open', 'false');
+            } else {
+                sidebar.style.transform = 'translateX(0)';
+                overlay.style.display = 'block';
+                sidebar.setAttribute('data-open', 'true');
+            }
+        }
+
+        // Dropdown
+        function toggleQRDropdown() {
+            var dropdown = document.getElementById('qrDropdown');
+            var arrow = document.getElementById('qrArrow');
+            var isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+            dropdown.style.display = isHidden ? 'flex' : 'none';
+            arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // QR Modal
+        function openQR(imageUrl) {
+            document.getElementById('qrImage').src = imageUrl;
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+        function closeQR() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        // Copy
+        function copyShort(id) {
+            var text = document.getElementById(id).innerText.trim();
+            navigator.clipboard.writeText(text);
+        }
+
+        // Short Edit Modal
+        function openShortEdit(qrId, currentCode) {
+            document.getElementById('shortEditInput').value = currentCode;
+            document.getElementById('shortEditForm').action = '/edit-qr/' + qrId + '/';
+            document.getElementById('shortEditModal').style.display = 'flex';
+        }
+        function closeShortEdit() {
+            document.getElementById('shortEditModal').style.display = 'none';
+        }
+
+        // Edit Short btn delegation
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.edit-short-btn');
+            if (btn) {
+                openShortEdit(btn.getAttribute('data-qrid'), btn.getAttribute('data-shortcode'));
+            }
+        });
+    </script>
+
+    {% if user.is_authenticated %}
+    <div id="shortEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:50;align-items:center;justify-content:center">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-80">
+            <h3 class="font-bold text-lg mb-4">✏️ Edit Short Code</h3>
+            <form id="shortEditForm" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="url" value="__keep__">
+                <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden mb-4 focus-within:ring-2 focus-within:ring-blue-500">
+                    <span class="bg-gray-50 text-gray-400 text-sm px-3 py-3 border-r border-gray-300">/s/</span>
+                    <input id="shortEditInput" type="text" name="short_code" placeholder="e.g. rahul"
+                        class="flex-1 p-3 outline-none text-sm">
+                </div>
+                <div class="flex gap-3">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white font-bold py-2 rounded-xl hover:bg-blue-700 transition">Save</button>
+                    <button type="button" onclick="closeShortEdit()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-2 rounded-xl hover:bg-gray-200 transition">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</body>
+</html>

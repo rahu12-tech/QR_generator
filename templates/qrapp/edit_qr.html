@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit QR{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-100 py-10">
+<div class="max-w-xl mx-auto px-5">
+
+    <div class="bg-white rounded-3xl shadow-xl p-8">
+
+        <h2 class="text-2xl font-bold mb-6">Edit QR Code</h2>
+
+        {% if error %}
+        <div class="bg-red-100 text-red-700 px-4 py-3 rounded-xl mb-5 text-sm">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Current QR preview -->
+        <div class="flex justify-center mb-6">
+            <img src="{{ qr.qr_image.url }}" class="w-40 h-40 border rounded-2xl p-2">
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label class="block text-sm font-medium text-gray-600 mb-1">Destination URL</label>
+            <input
+                type="url"
+                name="url"
+                value="{{ qr.url }}"
+                required
+                class="w-full border border-gray-300 rounded-xl p-4 mb-4 outline-none focus:ring-2 focus:ring-blue-500">
+
+            <label class="block text-sm font-medium text-gray-600 mb-1">Short Code</label>
+            <div class="flex items-center border border-gray-300 rounded-xl overflow-hidden mb-6 focus-within:ring-2 focus-within:ring-blue-500">
+                <span class="bg-gray-50 text-gray-400 text-sm px-3 py-4 border-r border-gray-300 whitespace-nowrap">/s/</span>
+                <input
+                    type="text"
+                    name="short_code"
+                    value="{{ qr.short_code }}"
+                    placeholder="e.g. rahul"
+                    class="flex-1 p-4 outline-none text-sm">
+            </div>
+
+            <div class="flex gap-3">
+                <button type="submit"
+                    class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition">
+                    Save Changes
+                </button>
+                <a href="{% url 'my_qrs' %}"
+                    class="flex-1 text-center bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

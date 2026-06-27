@@ -1,0 +1,28 @@
+# Virtual Environment
+env/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+db.sqlite3
+media/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Migrations (optional - remove if you want to keep them)
+# */migrations/*.py
+# !*/migrations/__init__.py

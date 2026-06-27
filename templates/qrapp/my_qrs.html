@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-100 py-8">
+<div class="max-w-4xl mx-auto px-5">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">My QR Codes</h1>
+        <a href="{% url 'dashboard' %}"
+            class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition text-sm font-medium">
+            + Create New
+        </a>
+    </div>
+
+    <form method="GET" class="mb-6">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search by URL..."
+            class="w-full border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+    </form>
+
+    {% for qr in qrs %}
+    <div class="bg-white rounded-2xl shadow-md mb-4 p-5">
+
+        <div class="flex gap-4">
+            <img src="{{ qr.qr_image.url }}" class="w-24 h-24 border rounded-xl p-1 flex-shrink-0">
+
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-gray-800 break-all text-sm">{{ qr.url }}</p>
+                <p class="text-gray-400 text-xs mt-1">{{ qr.created_at|date:"d M Y, h:i A" }}</p>
+
+                <div class="flex items-center gap-2 mt-2 flex-wrap">
+                    <span class="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg" id="short-{{ qr.id }}">
+                        {{ request.scheme }}://{{ request.get_host }}/s/{{ qr.short_code }}
+                    </span>
+                    <button onclick="copyShort('short-{{ qr.id }}')"
+                        class="text-xs text-gray-500 hover:text-gray-800 border border-gray-200 px-2 py-0.5 rounded-lg transition">
+                        Copy
+                    </button>
+                    <button data-qrid="{{ qr.id }}" data-shortcode="{{ qr.short_code }}"
+                        class="edit-short-btn text-xs text-indigo-600 hover:text-indigo-800 border border-indigo-200 px-2 py-0.5 rounded-lg transition">
+                        Edit Short
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3 mt-2">
+                    {% if qr.is_active %}
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Active</span>
+                    {% else %}
+                    <span class="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">Paused</span>
+                    {% endif %}
+                    <span class="text-xs text-gray-400">{{ qr.scans }} scans</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
+            <a href="{% url 'edit_qr' qr.id %}"
+                class="text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-600 transition">
+                Edit
+            </a>
+            <button onclick="openQR('{{ qr.qr_image.url }}')"
+                class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition">
+                View
+            </button>
+            <a href="{{ qr.qr_image.url }}" download
+                class="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition">
+                Download
+            </a>
+            <a href="{% url 'toggle_qr' qr.id %}"
+                class="text-xs bg-yellow-500 text-white px-3 py-1.5 rounded-lg hover:bg-yellow-600 transition">
+                {% if qr.is_active %}Pause{% else %}Activate{% endif %}
+            </a>
+            <a href="{% url 'delete_qr' qr.id %}"
+                class="text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition"
+                onclick="return confirm('Delete this QR Code?')">
+                Delete
+            </a>
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="bg-white rounded-2xl shadow-md p-10 text-center">
+        <p class="text-gray-400 text-lg mb-4">No QR Codes found.</p>
+        <a href="{% url 'dashboard' %}" class="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition text-sm">
+            Create Your First QR
+        </a>
+    </div>
+    {% endfor %}
+
+</div>
+</div>
+
+<div id="qrModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:50;align-items:center;justify-content:center">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-72 text-center">
+        <div class="flex justify-end mb-2">
+            <button onclick="closeQR()" class="text-gray-400 hover:text-black text-xl font-bold">&times;</button>
+        </div>
+        <img id="qrImage" src="" class="w-56 h-auto rounded-xl mx-auto">
+    </div>
+</div>
+
+{% endblock %}

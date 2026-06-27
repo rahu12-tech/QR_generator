@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gray-100 py-10">
+<div class="max-w-4xl mx-auto px-5">
+
+        <div class="bg-white rounded-3xl shadow-xl p-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold">Welcome, {{ request.user.username }}</h1>
+                <p class="text-gray-500 mt-2">Generate and manage your QR Codes.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+            <h2 class="text-2xl font-bold mb-6">
+                Generate QR Code
+            </h2>
+
+            {% if error %}
+            <div class="bg-red-100 text-red-700 p-4 rounded-xl mb-5">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="flex flex-col md:flex-row gap-4">
+
+                    <input
+                        type="url"
+                        name="url"
+                        placeholder="https://example.com"
+                        required
+                        class="flex-1 border border-gray-300 rounded-xl p-4 outline-none focus:ring-2 focus:ring-blue-500">
+
+                    <button
+                        type="submit"
+                        class="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-900 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition duration-300">
+
+                         Generate QR
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+       
+<div class="bg-white rounded-3xl shadow-xl p-8 mt-8">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-2xl font-bold">
+            Recent QR Codes
+        </h2>
+
+        <a
+            href="{% url 'my_qrs' %}"
+            class="text-blue-600 font-semibold hover:text-blue-800"
+        >
+            View All →
+        </a>
+
+    </div>
+
+    {% for qr in recent_qrs %}
+
+    <div class="flex items-center justify-between border-b py-4">
+
+        <div class="flex items-center gap-4">
+
+            <img
+                src="{{ qr.qr_image.url }}"
+                class="w-16 h-16 border rounded-xl p-1"
+            >
+
+            <div>
+
+                <p class="font-semibold break-all">
+                    {{ qr.url }}
+                </p>
+
+                <p class="text-gray-500 text-sm">
+                    {{ qr.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-gray-400">Short URL:</span>
+                    <span class="text-xs font-mono text-blue-600" id="short-{{ qr.id }}">
+                        {{ request.scheme }}://{{ request.get_host }}/s/{{ qr.short_code }}
+                    </span>
+                    <button onclick="copyShort('short-{{ qr.id }}')"
+                        class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded-lg transition">
+                        Copy
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <a
+            href="{{ qr.qr_image.url }}"
+            download
+            class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition"
+        >
+            Download
+        </a>
+
+    </div>
+
+    {% empty %}
+
+    <div class="text-center py-10">
+
+        <p class="text-gray-500 mb-4">
+            No QR Codes Yet.
+        </p>
+
+        <a
+            href="#"
+            class="bg-blue-600 text-white px-5 py-3 rounded-xl"
+        >
+            Create Your First QR
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</div>
+</div>
+
+{% endblock %}
