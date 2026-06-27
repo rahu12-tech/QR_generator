@@ -37,6 +37,7 @@ pip install pyjwt
 pip install qrcode[pil]
 pip install pillow
 pip install qrcode-artistic
+pip install psycopg2-binary
 ```
 
 ## Database

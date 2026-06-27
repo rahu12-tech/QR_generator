@@ -11,6 +11,9 @@ __pycache__/
 # Django
 db.sqlite3
 media/
+# Database
+db.sqlite3
+data.json
 
 # Environment variables
 .env
