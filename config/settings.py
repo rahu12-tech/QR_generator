@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
+
     'django.contrib.sites',
 
     'allauth',
@@ -152,3 +154,63 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SITE_ID = 1
+
+JAZZMIN_SETTINGS = {
+    'site_title': 'QR Generator Admin',
+    'site_header': 'QR Generator',
+    'site_brand': 'QR Generator',
+    'site_logo': None,
+    'welcome_sign': 'Welcome to QR Generator Admin Panel',
+    'copyright': 'QR Generator',
+    'search_model': ['auth.User', 'qrapp.QRCode'],
+    'topmenu_links': [
+        {'name': 'Home', 'url': 'admin:index', 'permissions': ['auth.view_user']},
+        {'name': 'View Site', 'url': '/dashboard/', 'new_window': True},
+    ],
+    'usermenu_links': [
+        {'name': 'View Site', 'url': '/dashboard/', 'new_window': True},
+    ],
+    'show_sidebar': True,
+    'navigation_expanded': True,
+    'icons': {
+        'auth': 'fas fa-users-cog',
+        'auth.user': 'fas fa-user',
+        'auth.Group': 'fas fa-users',
+        'qrapp.QRCode': 'fas fa-qrcode',
+    },
+    'default_icon_parents': 'fas fa-chevron-circle-right',
+    'default_icon_children': 'fas fa-circle',
+    'related_modal_active': True,
+    'show_ui_builder': False,
+    'changeform_format': 'horizontal_tabs',
+    'language_chooser': False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    'navbar_small_text': False,
+    'footer_small_text': False,
+    'body_small_text': False,
+    'brand_small_text': False,
+    'brand_colour': 'navbar-primary',
+    'accent': 'accent-indigo',
+    'navbar': 'navbar-dark',
+    'no_navbar_border': True,
+    'navbar_fixed': True,
+    'layout_boxed': False,
+    'footer_fixed': False,
+    'sidebar_fixed': True,
+    'sidebar': 'sidebar-dark-indigo',
+    'sidebar_nav_child_indent': True,
+    'sidebar_nav_compact_style': False,
+    'sidebar_nav_flat_style': False,
+    'theme': 'darkly',
+    'dark_mode_theme': 'darkly',
+    'button_classes': {
+        'primary': 'btn-primary',
+        'secondary': 'btn-secondary',
+        'info': 'btn-info',
+        'warning': 'btn-warning',
+        'danger': 'btn-danger',
+        'success': 'btn-success',
+    },
+}
