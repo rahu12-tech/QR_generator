@@ -39,24 +39,14 @@ def dashboard(request):
             url=url
         )
 
-        track_url = request.build_absolute_uri(
-        f'http://172.27.87.9:8000/scan/{qr_obj.id}/'
-        )
+        track_url = request.build_absolute_uri(f'/scan/{qr_obj.id}/')
 
         qr = qrcode.make(track_url)
 
-        buffer = BytesIO()
-        qr.save(buffer)
-
-
-
-        file_name = f'qr_{request.user.id}_{total + 1}.png'
-
-        qr_obj.qr_image.save(
-            file_name,
-            File(buffer),
-            save=True
-        )
+        with BytesIO() as buffer:
+            qr.save(buffer)
+            file_name = f'qr_{request.user.id}_{total + 1}.png'
+            qr_obj.qr_image.save(file_name, File(buffer), save=True)
 
         return redirect('my_qrs')
 
@@ -166,13 +156,12 @@ def edit_qr(request, id):
         if new_short_code:
             qr.short_code = new_short_code
 
-        # Regenerate QR only if URL changed
         if new_url != '__keep__':
-            track_url = f'http://127.0.0.1:8000/scan/{qr.id}/'
+            track_url = request.build_absolute_uri(f'/scan/{qr.id}/')
             img = qrcode.make(track_url)
-            buffer = BytesIO()
-            img.save(buffer)
-            qr.qr_image.save(qr.qr_image.name, File(buffer), save=False)
+            with BytesIO() as buffer:
+                img.save(buffer)
+                qr.qr_image.save(qr.qr_image.name, File(buffer), save=False)
 
         qr.save()
         return redirect('my_qrs')
