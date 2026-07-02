@@ -22,7 +22,11 @@
     <div class="bg-white rounded-2xl shadow-md mb-4 p-5">
 
         <div class="flex gap-4">
+            {% if qr.qr_image %}
             <img src="{{ qr.qr_image.url }}" class="w-24 h-24 border rounded-xl p-1 flex-shrink-0">
+            {% else %}
+            <div class="w-24 h-24 border rounded-xl p-1 flex-shrink-0 bg-gray-100 flex items-center justify-center text-gray-400 text-xs">No Image</div>
+            {% endif %}
 
             <div class="flex-1 min-w-0">
                 <p class="font-semibold text-gray-800 break-all text-sm">{{ qr.url }}</p>
@@ -58,14 +62,16 @@
                 class="text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-600 transition">
                 Edit
             </a>
-            <button onclick="openQR('{{ qr.qr_image.url }}')"
+            <button {% if qr.qr_image %}onclick="openQR('{{ qr.qr_image.url }}')"{% endif %}
                 class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition">
                 View
             </button>
+            {% if qr.qr_image %}
             <a href="{{ qr.qr_image.url }}" download
                 class="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition">
                 Download
             </a>
+            {% endif %}
             <a href="{% url 'toggle_qr' qr.id %}"
                 class="text-xs bg-yellow-500 text-white px-3 py-1.5 rounded-lg hover:bg-yellow-600 transition">
                 {% if qr.is_active %}Pause{% else %}Activate{% endif %}

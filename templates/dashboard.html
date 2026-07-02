@@ -79,10 +79,14 @@ Dashboard
 
         <div class="flex items-center gap-4">
 
+            {% if qr.qr_image %}
             <img
                 src="{{ qr.qr_image.url }}"
                 class="w-16 h-16 border rounded-xl p-1"
             >
+            {% else %}
+            <div class="w-16 h-16 border rounded-xl p-1 bg-gray-100 flex items-center justify-center text-gray-400 text-xs">No Image</div>
+            {% endif %}
 
             <div>
 
@@ -109,6 +113,7 @@ Dashboard
 
         </div>
 
+        {% if qr.qr_image %}
         <a
             href="{{ qr.qr_image.url }}"
             download
@@ -116,6 +121,7 @@ Dashboard
         >
             Download
         </a>
+        {% endif %}
 
     </div>
 
