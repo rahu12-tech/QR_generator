@@ -92,8 +92,15 @@
 
         // copy
         function copyShort(id) {
-            var text = document.getElementById(id).innerText.trim();
+            var el = document.getElementById(id);
+            var text = el.innerText.trim();
             navigator.clipboard.writeText(text);
+            el.style.background = '#bfdbfe';
+            el.style.color = '#1d4ed8';
+            setTimeout(function() {
+                el.style.background = '';
+                el.style.color = '';
+            }, 1500);
         }
 
         // download QR

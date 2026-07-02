@@ -32,10 +32,12 @@ def login_view(request):
             password=password,
         )
         if user is not None:
+            if not user.is_active:
+                return render(request, 'login.html', {'error': 'Your account has been blocked by the admin. Please contact support.'})
             login(request, user)
             return redirect('dashboard')
         else:
-            return render(request, 'login.html')
+            return render(request, 'login.html', {'error': 'Invalid username or password.'})
     return render(request, 'login.html')
 
 
