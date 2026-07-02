@@ -72,7 +72,7 @@
             }
         }
 
-        // Dropdown
+        // dropdown
         function toggleQRDropdown() {
             var dropdown = document.getElementById('qrDropdown');
             var arrow = document.getElementById('qrArrow');
@@ -81,7 +81,7 @@
             arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // QR Modal
+        // QR modal
         function openQR(imageUrl) {
             document.getElementById('qrImage').src = imageUrl;
             document.getElementById('qrModal').style.display = 'flex';
@@ -90,10 +90,23 @@
             document.getElementById('qrModal').style.display = 'none';
         }
 
-        // Copy
+        // copy
         function copyShort(id) {
             var text = document.getElementById(id).innerText.trim();
             navigator.clipboard.writeText(text);
+        }
+
+        // download QR
+        function downloadQR(url, filename) {
+            fetch(url)
+                .then(r => r.blob())
+                .then(blob => {
+                    var a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = filename || 'qr.png';
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                });
         }
 
         // Short Edit Modal
@@ -106,7 +119,7 @@
             document.getElementById('shortEditModal').style.display = 'none';
         }
 
-        // Edit Short btn delegation
+        // Edit Short button
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.edit-short-btn');
             if (btn) {

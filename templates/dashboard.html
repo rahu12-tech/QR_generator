@@ -114,13 +114,10 @@ Dashboard
         </div>
 
         {% if qr.qr_image %}
-        <a
-            href="{{ qr.qr_image.url }}"
-            download
-            class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition"
-        >
+        <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png')"
+            class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition">
             Download
-        </a>
+        </button>
         {% endif %}
 
     </div>

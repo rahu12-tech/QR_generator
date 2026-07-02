@@ -67,10 +67,10 @@
                 View
             </button>
             {% if qr.qr_image %}
-            <a href="{{ qr.qr_image.url }}" download
+            <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png')"
                 class="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition">
                 Download
-            </a>
+            </button>
             {% endif %}
             <a href="{% url 'toggle_qr' qr.id %}"
                 class="text-xs bg-yellow-500 text-white px-3 py-1.5 rounded-lg hover:bg-yellow-600 transition">
