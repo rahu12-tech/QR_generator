@@ -45,6 +45,7 @@ def dashboard(request):
 
         with BytesIO() as buffer:
             qr.save(buffer)
+            buffer.seek(0)
             file_name = f'qr_{request.user.id}_{total + 1}.png'
             qr_obj.qr_image.save(file_name, File(buffer), save=True)
 
@@ -161,6 +162,7 @@ def edit_qr(request, id):
             img = qrcode.make(track_url)
             with BytesIO() as buffer:
                 img.save(buffer)
+                buffer.seek(0)
                 qr.qr_image.save(qr.qr_image.name, File(buffer), save=False)
 
         qr.save()
