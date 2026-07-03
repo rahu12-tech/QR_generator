@@ -48,10 +48,16 @@
         <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="change_password">
-            <input type="password" name="old_password" placeholder="Current password" required
-                class="w-full border border-gray-300 rounded-xl p-3 mb-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-            <input type="password" name="new_password" placeholder="New password" required
-                class="w-full border border-gray-300 rounded-xl p-3 mb-4 outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <div class="position-relative mb-3">
+                <input id="oldPass" type="password" name="old_password" placeholder="Current password" required
+                    class="w-full border border-gray-300 rounded-xl p-3 pe-10 outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                <button type="button" onclick="togglePassword('oldPass',this)" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 p-0 border-0 bg-transparent">👁</button>
+            </div>
+            <div class="position-relative mb-4">
+                <input id="newPass" type="password" name="new_password" placeholder="New password" required
+                    class="w-full border border-gray-300 rounded-xl p-3 pe-10 outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                <button type="button" onclick="togglePassword('newPass',this)" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 p-0 border-0 bg-transparent">👁</button>
+            </div>
             <button type="submit"
                 class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">
                 Change Password

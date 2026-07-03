@@ -21,7 +21,7 @@
         <div class="flex items-center gap-3">
             <button onclick="history.back()" class="text-sm text-gray-500 hover:text-black transition">&#8592; Back</button>
             <a href="{% url 'dashboard' %}" class="text-sm bg-gray-100 text-gray-700 font-medium px-3 py-1.5 rounded-lg hover:bg-gray-200 transition">{{ request.user.username }}</a>
-            <a href="{% url 'logout' %}" class="bg-red-500 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-red-600 transition">Logout</a>
+            <a href="{% url 'logout' %}" onclick="showToast('Logging out...','#ef4444')" class="bg-red-500 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-red-600 transition">Logout</a>
         </div>
 
     </nav>
@@ -133,12 +133,40 @@
                 openShortEdit(btn.getAttribute('data-qrid'), btn.getAttribute('data-shortcode'));
             }
         });
+
+        // Toast
+        function showToast(msg, color) {
+            var t = document.getElementById('globalToast');
+            t.innerText = msg;
+            t.style.background = color || '#1d4ed8';
+            t.style.opacity = '1';
+            t.style.transform = 'translateY(0)';
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(function() {
+                t.style.opacity = '0';
+                t.style.transform = 'translateY(20px)';
+            }, 2500);
+        }
+
+        // Password toggle
+        function togglePassword(id, btn) {
+            var inp = document.getElementById(id);
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                btn.innerText = '🙈';
+            } else {
+                inp.type = 'password';
+                btn.innerText = '👁';
+            }
+        }
     </script>
+
+    <div id="globalToast" style="position:fixed;bottom:24px;right:24px;z-index:9999;color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:600;opacity:0;transform:translateY(20px);transition:all 0.3s ease;pointer-events:none;"></div>
 
     {% if user.is_authenticated %}
     <div id="shortEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:50;align-items:center;justify-content:center">
         <div class="bg-white rounded-2xl shadow-2xl p-6 w-80">
-            <h3 class="font-bold text-lg mb-4">✏️ Edit Short Code</h3>
+            <h3 class="font-bold text-lg mb-4"> Edit Short Code</h3>
             <form id="shortEditForm" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="url" value="__keep__">

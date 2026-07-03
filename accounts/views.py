@@ -13,6 +13,11 @@ def signup_view(request):
         email=request.POST.get('email')
         password=request.POST.get('password')
 
+        if User.objects.filter(email=email).exists():
+            return render(request, 'signup.html', {'error': 'An account with this email already exists. Please login.'})
+        if User.objects.filter(username=username).exists():
+            return render(request, 'signup.html', {'error': 'Username already taken.'})
+
         User.objects.create_user(
             username=username,
             email=email,

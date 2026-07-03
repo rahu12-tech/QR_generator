@@ -103,7 +103,7 @@ Dashboard
                     <span class="text-xs font-mono text-blue-600" id="short-{{ qr.id }}">
                         {{ request.scheme }}://{{ request.get_host }}/s/{{ qr.short_code }}
                     </span>
-                    <button onclick="copyShort('short-{{ qr.id }}')"
+                    <button onclick="copyShort('short-{{ qr.id }}');showToast('Short URL copied!','#059669')"
                         class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded-lg transition">
                         Copy
                     </button>
@@ -114,7 +114,7 @@ Dashboard
         </div>
 
         {% if qr.qr_image %}
-        <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png')"
+        <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png');showToast('Downloading QR...','#16a34a')"
             class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 transition">
             Download
         </button>

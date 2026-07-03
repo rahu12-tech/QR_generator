@@ -36,7 +36,7 @@
                     <span class="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg" id="short-{{ qr.id }}">
                         {{ request.scheme }}://{{ request.get_host }}/s/{{ qr.short_code }}
                     </span>
-                    <button onclick="copyShort('short-{{ qr.id }}')"
+                    <button onclick="copyShort('short-{{ qr.id }}');showToast('Short URL copied!','#059669')"
                         class="text-xs text-gray-500 hover:text-gray-800 border border-gray-200 px-2 py-0.5 rounded-lg transition">
                         Copy
                     </button>
@@ -58,27 +58,27 @@
         </div>
 
         <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
-            <a href="{% url 'edit_qr' qr.id %}"
+            <a href="{% url 'edit_qr' qr.id %}" onclick="showToast('Opening editor...','#6366f1')"
                 class="text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-600 transition">
                 Edit
             </a>
-            <button {% if qr.qr_image %}onclick="openQR('{{ qr.qr_image.url }}')"{% endif %}
+            <button {% if qr.qr_image %}onclick="openQR('{{ qr.qr_image.url }}');showToast('Viewing QR...','#3b82f6')"{% endif %}
                 class="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition">
                 View
             </button>
             {% if qr.qr_image %}
-            <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png')"
+            <button onclick="downloadQR('{{ qr.qr_image.url }}', 'qr_{{ qr.id }}.png');showToast('Downloading QR...','#16a34a')"
                 class="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 transition">
                 Download
             </button>
             {% endif %}
-            <a href="{% url 'toggle_qr' qr.id %}"
+            <a href="{% url 'toggle_qr' qr.id %}" onclick="showToast('{% if qr.is_active %}Pausing QR...{% else %}Activating QR...{% endif %}','#d97706')"
                 class="text-xs bg-yellow-500 text-white px-3 py-1.5 rounded-lg hover:bg-yellow-600 transition">
                 {% if qr.is_active %}Pause{% else %}Activate{% endif %}
             </a>
             <a href="{% url 'delete_qr' qr.id %}"
                 class="text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition"
-                onclick="return confirm('Delete this QR Code?')">
+                onclick="if(!confirm('Delete this QR Code?')){event.preventDefault();}else{showToast('Deleting QR...','#ef4444');}">
                 Delete
             </a>
         </div>

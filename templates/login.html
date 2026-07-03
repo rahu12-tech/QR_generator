@@ -16,7 +16,11 @@
             {% csrf_token %}
 
             <input type="text" name="username" class="form-control mb-3" placeholder="Enter your username">
-            <input type="password" name="password" class="form-control mb-2" placeholder="Enter your password">
+
+            <div class="position-relative mb-2">
+                <input id="loginPass" type="password" name="password" class="form-control pe-5" placeholder="Enter your password">
+                <button type="button" onclick="togglePassword('loginPass',this)" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 p-0 border-0 bg-transparent">👁</button>
+            </div>
 
             <div class="text-end mb-3">
                 <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot Password?</a>

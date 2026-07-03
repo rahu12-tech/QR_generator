@@ -16,11 +16,18 @@
 
             {% csrf_token %}
 
+            {% if error %}
+            <div class="alert alert-danger rounded-3 text-sm py-2 px-3 mb-3">{{ error }}</div>
+            {% endif %}
+
             <input type="text" name="username" class="form-control mb-3" placeholder="Username">
 
             <input type="email" name="email" class="form-control mb-3" placeholder="Email">
 
-            <input type="password" name="password" class="form-control mb-3" placeholder="Password">
+            <div class="position-relative mb-3">
+                <input id="signupPass" type="password" name="password" class="form-control pe-5" placeholder="Password">
+                <button type="button" onclick="togglePassword('signupPass',this)" class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-1 p-0 border-0 bg-transparent">👁</button>
+            </div>
 
             <button class="btn btn-primary w-100">
 
